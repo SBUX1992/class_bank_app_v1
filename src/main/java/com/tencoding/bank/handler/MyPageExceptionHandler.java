@@ -1,5 +1,6 @@
 package com.tencoding.bank.handler;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,7 +13,8 @@ import com.tencoding.bank.handler.exception.CustomPageException;
  * 객체를 반환하도록 설계할 때 사용 
  * 예외 page 를 리턴하도록 설계 
  */
-@ControllerAdvice  // IoC 대상 
+@ControllerAdvice  // IoC 대상
+@Order(2)
 public class MyPageExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
@@ -26,7 +28,7 @@ public class MyPageExceptionHandler {
 	@ExceptionHandler(CustomPageException.class)
 	public ModelAndView handleRuntimePageExcption(CustomPageException e) {
 		System.out.println("여기 타는지 확인 !!!!");
-		// ModelAndView 활용 방법 - 페이지 명시해야 함
+		// ModelAndView 활용 방법 - 페이지 명시해야 함 	
 		ModelAndView modelAndView = new ModelAndView("errorPage");
 		modelAndView.addObject("statusCode", HttpStatus.NOT_FOUND.value());
 		modelAndView.addObject("message", e.getMessage());
