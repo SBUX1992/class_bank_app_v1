@@ -35,9 +35,6 @@ public class UserController {
 		// 3. 서비스 호출
 		// 4. 정상 처리되었다면
 		return "redirect:/user/sign-in";
-		
-		
-		
 	}
 	
 }
