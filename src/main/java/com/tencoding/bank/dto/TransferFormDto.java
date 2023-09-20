@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class TransferFormDto {
-
-	private long amount;
+	
+	private Long amount; 
 	private String wAccountNumber;
-	private String wAccountPassword;
+	private String wAccountPassword; 
 	private String dAccountNumber;
 }
