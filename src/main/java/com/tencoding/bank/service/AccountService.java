@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tencoding.bank.dto.DepositFormDto;
+import com.tencoding.bank.dto.HistoryDto;
 import com.tencoding.bank.dto.SaveFormDto;
 import com.tencoding.bank.dto.TransferFormDto;
 import com.tencoding.bank.dto.WithdrawFormDto;
@@ -114,39 +115,38 @@ public class AccountService {
 		History history = new History();
 		history.setAmount(depositFormDto.getAmount());
 		history.setWBalance(null);
-		// 현재 입금 되었을 때 잔액을 기록 
+		// 현재 입금 되었을 때 잔액을 기록
 		history.setDBalance(accountEntity.getBalance());
 		history.setWAccountId(null);
 		history.setDAccountId(accountEntity.getId());
-		
+
 		int resultRowCount = historyRepository.insert(history);
-		if(resultRowCount != 1) {
+		if (resultRowCount != 1) {
 			throw new CustomRestfullException("정상 처리가 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
 
 	}
-	
-	// 이체 로직 고민해보기 
-	// 1. 출금 계좌 존재 여부 확인 - select 
-	// 2. 입금 계좌 존재 여부 확인 - select 
-	// 3. 출금 계좌 본인 소유 확인 - 객체 상태값 확인 (id)  / 객체( 1 - select )
-	// 4. 출금 계좌 비번 확인 - TransferFormDto(비번) / 모델 (비번) 
-	// 5. 출금 계좌 잔액 여부 확인 - DTO / 모델 객체 
-	// 6. 출금 계좌 잔액 - update 
+
+	// 이체 로직 고민해보기
+	// 1. 출금 계좌 존재 여부 확인 - select
+	// 2. 입금 계좌 존재 여부 확인 - select
+	// 3. 출금 계좌 본인 소유 확인 - 객체 상태값 확인 (id) / 객체( 1 - select )
+	// 4. 출금 계좌 비번 확인 - TransferFormDto(비번) / 모델 (비번)
+	// 5. 출금 계좌 잔액 여부 확인 - DTO / 모델 객체
+	// 6. 출금 계좌 잔액 - update
 	// 7. 입금 계좌 잔액 - update
 	// 8. 거래 내역 등록
-	// 9. 트랜잭션 처리 
+	// 9. 트랜잭션 처리
 	@Transactional
 	public void updateAccountTransfer(TransferFormDto transferFormDto, Integer id) {
 		// 1
 		Account withdrawAccountEntity = accountRepository.findByNumber(transferFormDto.getWAccountNumber());
-		if(withdrawAccountEntity == null) {
+		if (withdrawAccountEntity == null) {
 			throw new CustomRestfullException("출금 계좌가 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		// 2 
+		// 2
 		Account depositAccountEntity = accountRepository.findByNumber(transferFormDto.getDAccountNumber());
-		if(depositAccountEntity == null) {
+		if (depositAccountEntity == null) {
 			throw new CustomRestfullException("입금 계좌가 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		// 3. 출금 계좌 본인 소유 확인
@@ -155,26 +155,51 @@ public class AccountService {
 		withdrawAccountEntity.checkPassword(transferFormDto.getWAccountPassword());
 		// 5. 출금 계좌 잔액 여부 확인
 		withdrawAccountEntity.checkBalance(transferFormDto.getAmount());
-		// 6. 출금 계좌 잔액 상태 값 변경 처리 
+		// 6. 출금 계좌 잔액 상태 값 변경 처리
 		withdrawAccountEntity.withdraw(transferFormDto.getAmount());
-		// update 처리 
+		// update 처리
 		accountRepository.updateById(withdrawAccountEntity);
-		// 7. 입금 계좌 잔액 상태 값 변경 처리 
+		// 7. 입금 계좌 잔액 상태 값 변경 처리
 		depositAccountEntity.deposit(transferFormDto.getAmount());
-		// update 처리 
+		// update 처리
 		accountRepository.updateById(depositAccountEntity);
-		// 8 
+		// 8
 		History history = new History();
 		history.setAmount(transferFormDto.getAmount());
 		history.setWAccountId(withdrawAccountEntity.getId());
 		history.setDAccountId(depositAccountEntity.getId());
 		history.setWBalance(withdrawAccountEntity.getBalance());
 		history.setDBalance(depositAccountEntity.getBalance());
-		
+
 		int resultRowCount = historyRepository.insert(history);
-		if(resultRowCount != 1) {
+		if (resultRowCount != 1) {
 			throw new CustomRestfullException("정상 처리 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	/**
+	 * 단일 계좌 정보 검색 
+	 * @param id (계좌 pk) 
+	 * @return Account Entity
+	 */
+	public Account readAccount(Integer id) {
+		// 계좌 존재 여부 확인 
+		Account accountEntity = accountRepository.findById(id);
+		if(accountEntity == null) {
+			throw new CustomRestfullException("해당 계좌를 찾을 수 없습니다", HttpStatus.BAD_REQUEST);	
+		}
+		return accountEntity;
+	}
+	
+	/**
+	 * 단일 계좌에 대한 거내 내역 검색
+	 * @param type = [all, deposit, withdraw] 
+	 * @param id(account pk)
+	 * @return History 거래 내역 (DTO) 
+	 */
+	public List<HistoryDto> readHistoryListByAccount(Integer id, String type) {
+		List<HistoryDto> historyList = historyRepository.findByHistoryType(id, type);
+		return historyList;
 	}
 
 }
