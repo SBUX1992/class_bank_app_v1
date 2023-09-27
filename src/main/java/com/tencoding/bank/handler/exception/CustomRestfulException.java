@@ -9,11 +9,11 @@ import org.springframework.http.HttpStatus;
 
 // 클래스 정의를 한다. 
 @Getter // IoC 대상이 아니다 (필요할 때 직접 new 할 예정) 
-public class CustomRestfullException extends RuntimeException {
+public class CustomRestfulException extends RuntimeException {
 
 	private HttpStatus status;
 	
-	public CustomRestfullException(String message, 
+	public CustomRestfulException(String message, 
 			HttpStatus status) {
 		super(message);
 		this.status = status;

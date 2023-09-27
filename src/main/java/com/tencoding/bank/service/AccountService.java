@@ -12,7 +12,7 @@ import com.tencoding.bank.dto.HistoryDto;
 import com.tencoding.bank.dto.SaveFormDto;
 import com.tencoding.bank.dto.TransferFormDto;
 import com.tencoding.bank.dto.WithdrawFormDto;
-import com.tencoding.bank.handler.exception.CustomRestfullException;
+import com.tencoding.bank.handler.exception.CustomRestfulException;
 import com.tencoding.bank.repository.interfaces.AccountRepository;
 import com.tencoding.bank.repository.interfaces.HistoryRepository;
 import com.tencoding.bank.repository.model.Account;
@@ -37,7 +37,7 @@ public class AccountService {
 		account.setUserId(principalId);
 		int resultRowCount = accountRepository.insert(account);
 		if (resultRowCount != 1) {
-			throw new CustomRestfullException("계좌 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CustomRestfulException("계좌 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -65,18 +65,18 @@ public class AccountService {
 	public void updateAccountWithdarw(WithdrawFormDto withdrawFormDto, Integer id) {
 		Account accountEnitity = accountRepository.findByNumber(withdrawFormDto.getWAccountNumber());
 		if (accountEnitity == null) { // 1
-			throw new CustomRestfullException("해당 계좌가 없습니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("해당 계좌가 없습니다", HttpStatus.BAD_REQUEST);
 		}
 		if (accountEnitity.getUserId() != id) { // 2
-			throw new CustomRestfullException("본인 소유 계좌가 아닙니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("본인 소유 계좌가 아닙니다", HttpStatus.BAD_REQUEST);
 		}
 		// 3
 		if (accountEnitity.getPassword().equals(withdrawFormDto.getWAccountPassword()) == false) {
-			throw new CustomRestfullException("출금 계좌 비밀번호가 틀렸습니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("출금 계좌 비밀번호가 틀렸습니다", HttpStatus.BAD_REQUEST);
 		}
 		// 4
 		if (accountEnitity.getBalance() < withdrawFormDto.getAmount()) {
-			throw new CustomRestfullException("계좌 잔액이 부족합니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("계좌 잔액이 부족합니다", HttpStatus.BAD_REQUEST);
 		}
 		// 5 -> update 쿼리 (모델 객체 상태 변경 --> 객체를 다시 던지기)
 		accountEnitity.withdraw(withdrawFormDto.getAmount());
@@ -92,7 +92,7 @@ public class AccountService {
 
 		int resultRowCount = historyRepository.insert(history);
 		if (resultRowCount != 1) {
-			throw new CustomRestfullException("정상 처리 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CustomRestfulException("정상 처리 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -105,7 +105,7 @@ public class AccountService {
 
 		Account accountEntity = accountRepository.findByNumber(depositFormDto.getDAccountNumber());
 		if (accountEntity == null) {
-			throw new CustomRestfullException("해당 계좌가 존재하지 않습니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("해당 계좌가 존재하지 않습니다", HttpStatus.BAD_REQUEST);
 		}
 
 		// 객체 상태값 변경 처리
@@ -122,7 +122,7 @@ public class AccountService {
 
 		int resultRowCount = historyRepository.insert(history);
 		if (resultRowCount != 1) {
-			throw new CustomRestfullException("정상 처리가 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CustomRestfulException("정상 처리가 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -142,12 +142,12 @@ public class AccountService {
 		// 1
 		Account withdrawAccountEntity = accountRepository.findByNumber(transferFormDto.getWAccountNumber());
 		if (withdrawAccountEntity == null) {
-			throw new CustomRestfullException("출금 계좌가 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CustomRestfulException("출금 계좌가 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		// 2
 		Account depositAccountEntity = accountRepository.findByNumber(transferFormDto.getDAccountNumber());
 		if (depositAccountEntity == null) {
-			throw new CustomRestfullException("입금 계좌가 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CustomRestfulException("입금 계좌가 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		// 3. 출금 계좌 본인 소유 확인
 		withdrawAccountEntity.checkOwner(id);
@@ -173,7 +173,7 @@ public class AccountService {
 
 		int resultRowCount = historyRepository.insert(history);
 		if (resultRowCount != 1) {
-			throw new CustomRestfullException("정상 처리 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CustomRestfulException("정상 처리 되지 않았습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -186,7 +186,7 @@ public class AccountService {
 		// 계좌 존재 여부 확인 
 		Account accountEntity = accountRepository.findById(id);
 		if(accountEntity == null) {
-			throw new CustomRestfullException("해당 계좌를 찾을 수 없습니다", HttpStatus.BAD_REQUEST);	
+			throw new CustomRestfulException("해당 계좌를 찾을 수 없습니다", HttpStatus.BAD_REQUEST);	
 		}
 		return accountEntity;
 	}

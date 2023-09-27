@@ -22,4 +22,6 @@ public interface UserRepository {
 	public List<User> findAll();
 	
 	public User findByUsernameAndPassword(SignInFormDto signInFormDto);
+	public User findByUsername(String username);
+	
 }

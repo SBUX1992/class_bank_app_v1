@@ -4,7 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.tencoding.bank.handler.exception.CustomRestfullException;
+import com.tencoding.bank.handler.exception.CustomRestfulException;
 import com.tencoding.bank.handler.exception.UnAuthorizedException;
 
 /**
@@ -24,8 +24,8 @@ public class MyRestfullExceptionHandler {
 //	}
 	
 	// 사용자 정의 예외 클래스 활용 
-	@ExceptionHandler(CustomRestfullException.class)
-	public String basicException(CustomRestfullException e) {
+	@ExceptionHandler(CustomRestfulException.class)
+	public String basicException(CustomRestfulException e) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<script>");
 		sb.append("alert( ' " + e.getMessage() +" '  );"); // 문자열 안에 반드시 ; 콜론 붙이기

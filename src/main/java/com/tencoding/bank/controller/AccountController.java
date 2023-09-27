@@ -20,7 +20,7 @@ import com.tencoding.bank.dto.HistoryDto;
 import com.tencoding.bank.dto.SaveFormDto;
 import com.tencoding.bank.dto.TransferFormDto;
 import com.tencoding.bank.dto.WithdrawFormDto;
-import com.tencoding.bank.handler.exception.CustomRestfullException;
+import com.tencoding.bank.handler.exception.CustomRestfulException;
 import com.tencoding.bank.handler.exception.UnAuthorizedException;
 import com.tencoding.bank.repository.model.Account;
 import com.tencoding.bank.repository.model.User;
@@ -86,15 +86,15 @@ public class AccountController {
 		}
 		// 2. 유효성 검사
 		if (saveFormDto.getNumber() == null || saveFormDto.getNumber().isEmpty()) {
-			throw new CustomRestfullException("계좌 번호를 입력해주세요", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("계좌 번호를 입력해주세요", HttpStatus.BAD_REQUEST);
 		}
 
 		if (saveFormDto.getPassword() == null || saveFormDto.getPassword().isEmpty()) {
-			throw new CustomRestfullException("계좌 비밀 번호를 입력해주세요", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("계좌 비밀 번호를 입력해주세요", HttpStatus.BAD_REQUEST);
 		}
 
 		if (saveFormDto.getBalance() == null || saveFormDto.getBalance() < 0) {
-			throw new CustomRestfullException("잘못된 입력입니다.", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("잘못된 입력입니다.", HttpStatus.BAD_REQUEST);
 		}
 		// 서비스 호출
 		accountService.createAccount(saveFormDto, user.getId());
@@ -128,16 +128,16 @@ public class AccountController {
 		}
 		// 2. 유효성 검사
 		if (withdrawFormDto.getAmount() == null) {
-			throw new CustomRestfullException("금액을 입력하시오", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("금액을 입력하시오", HttpStatus.BAD_REQUEST);
 		}
 		if (withdrawFormDto.getAmount() <= 0) {
-			throw new CustomRestfullException("0원 이하일 수 없습니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("0원 이하일 수 없습니다", HttpStatus.BAD_REQUEST);
 		}
 		if (withdrawFormDto.getWAccountNumber() == null || withdrawFormDto.getWAccountNumber().isEmpty()) {
-			throw new CustomRestfullException("출금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("출금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
 		}
 		if (withdrawFormDto.getWAccountPassword() == null || withdrawFormDto.getWAccountPassword().isEmpty()) {
-			throw new CustomRestfullException("출금 계좌 비밀 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("출금 계좌 비밀 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
 		}
 
 		accountService.updateAccountWithdarw(withdrawFormDto, user.getId());
@@ -166,15 +166,15 @@ public class AccountController {
 		}
 		// 2. 유효성 검사
 		if (depositFormDto.getAmount() == null) {
-			throw new CustomRestfullException("금액을 입력해 주세요", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("금액을 입력해 주세요", HttpStatus.BAD_REQUEST);
 		}
 
 		if (depositFormDto.getAmount() <= 0) {
-			throw new CustomRestfullException("0원 이하에 금액을 입력할 수 없습니다.", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("0원 이하에 금액을 입력할 수 없습니다.", HttpStatus.BAD_REQUEST);
 		}
 
 		if (depositFormDto.getDAccountNumber() == null || depositFormDto.getDAccountNumber().isEmpty()) {
-			throw new CustomRestfullException("계좌 번호를 입력하세요", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("계좌 번호를 입력하세요", HttpStatus.BAD_REQUEST);
 		}
 
 		// 3. 서비스 호출
@@ -208,19 +208,19 @@ public class AccountController {
 		}
 		// 2. 유효성 검사
 		if (transferFormDto.getWAccountNumber() == null || transferFormDto.getWAccountNumber().isEmpty()) {
-			throw new CustomRestfullException("출금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("출금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
 		}
 
 		if (transferFormDto.getDAccountNumber() == null || transferFormDto.getDAccountNumber().isEmpty()) {
-			throw new CustomRestfullException("입금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("입금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
 		}
 
 		if (transferFormDto.getWAccountPassword() == null || transferFormDto.getWAccountPassword().isEmpty()) {
-			throw new CustomRestfullException("출금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("출금 계좌 번호를 입력 하시오", HttpStatus.BAD_REQUEST);
 		}
 
 		if (transferFormDto.getAmount() <= 0) {
-			throw new CustomRestfullException("이체 금액이 0원 이하일 수 없습니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("이체 금액이 0원 이하일 수 없습니다", HttpStatus.BAD_REQUEST);
 		}
 
 		// 3. 서비스 호출

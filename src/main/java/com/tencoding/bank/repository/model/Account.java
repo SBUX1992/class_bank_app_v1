@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 import org.springframework.http.HttpStatus;
 
-import com.tencoding.bank.handler.exception.CustomRestfullException;
+import com.tencoding.bank.handler.exception.CustomRestfulException;
 
 import lombok.Data;
 
@@ -29,21 +29,21 @@ public class Account {
 	// 계좌 소유자 확인 
 	public void checkOwner(Integer principalId) {
 		if(this.userId != principalId) {
-			throw new CustomRestfullException("계좌 소유자가 아닙니다", HttpStatus.FORBIDDEN);
+			throw new CustomRestfulException("계좌 소유자가 아닙니다", HttpStatus.FORBIDDEN);
 		}
 	}
 	
 	// 패스워드 체크 
 	public void checkPassword(String principalPassword) {
 		if(this.password.equals(principalPassword) == false) {
-			throw new CustomRestfullException("계좌 비밀번호가 틀렸습니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("계좌 비밀번호가 틀렸습니다", HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	// 잔액 여부 확인
 	public void checkBalance(Long amount) {
 		if(this.balance < amount) {
-			throw new CustomRestfullException("계좌 잔액이 부족합니다", HttpStatus.BAD_REQUEST);
+			throw new CustomRestfulException("계좌 잔액이 부족합니다", HttpStatus.BAD_REQUEST);
 		}
 	}
 }
